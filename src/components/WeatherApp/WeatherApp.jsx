@@ -1,5 +1,5 @@
 
-import React from "react";
+import React, {useState} from "react";
 import './WeatherApp.css';
 import search_icon from '../Assets/search.png';
 import clear_icon from '../Assets/clear.png';
@@ -13,6 +13,7 @@ import humidity_icon from '../Assets/humidity.png';
 const WaeatherApp = ()=> {
 
     let api_key = "6557e15d870bf75914ad4e1304e4ccb6";
+    const [wicon, setWicon] = useState(cloud_icon);
 
     const search = async () =>{
         const element= document.getElementsByClassName("cityInput");
@@ -30,11 +31,33 @@ const WaeatherApp = ()=> {
         try{
             let response = await fetch(url);
             let data = await response.json();
+            let weathicon = data.weather[0].icon;
             humidity[0].innerHTML = data.main.humidity+" %";
-            wind[0].innerHTML = data.wind.speed+ " km/h";
-            temperature[0].innerHTML = data.main.temp+ " °c";
+            wind[0].innerHTML = Math.floor(data.wind.speed)+ " km/h";
+            temperature[0].innerHTML = Math.floor(data.main.temp)+ " °c";
             location[0].innerHTML= data.name;
+
+            if(weathicon==="01d" || weathicon==="01n"){
+                setWicon(clear_icon);
+            }else if(weathicon==="02d" || weathicon==="02n"){
+                setWicon(cloud_icon);
+            }else if(weathicon==="03d" || weathicon==="03n"){
+                setWicon(drizzle_icon);
+            }else if(weathicon==="04d" || weathicon==="04n"){
+                setWicon(drizzle_icon);
+            }else if(weathicon==="09d" || weathicon==="09n"){
+                setWicon(rain_icon);
+            }else if(weathicon==="10d" || weathicon==="10n"){
+                setWicon(rain_icon);
+            }else if(weathicon==="13d" || weathicon==="13n"){
+                setWicon(snow_icon);
+            }else{
+                setWicon(clear_icon);
+            }
+
+             
         }catch(err){
+            console.log(err);
             alert("Wrong Location Entered - Please enter correct location");
         }
         
@@ -48,7 +71,7 @@ const WaeatherApp = ()=> {
             </div>
         </div>
         <div className="weather-image">
-            <img src={cloud_icon} alt="" />
+            <img src={wicon} alt="" />
         </div>
         <div className="weather-temp">0°c</div>
         <div className="weather-location">No location</div>

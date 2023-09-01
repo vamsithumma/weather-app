@@ -27,6 +27,9 @@ const WaeatherApp = ()=> {
         const temperature = document.getElementsByClassName("weather-temp");
         const wind= document.getElementsByClassName("wind-rate");
         const location= document.getElementsByClassName("weather-location");
+        const feelslike = document.getElementsByClassName("weather-feels-like-temp");
+        const max_temp= document.getElementsByClassName("maxtemp");
+        const min_temp= document.getElementsByClassName("mintemp");
 
         try{
             let response = await fetch(url);
@@ -36,6 +39,9 @@ const WaeatherApp = ()=> {
             wind[0].innerHTML = Math.floor(data.wind.speed)+ " km/h";
             temperature[0].innerHTML = Math.floor(data.main.temp)+ " °c";
             location[0].innerHTML= data.name;
+            feelslike[0].innerHTML= "Feels like - " +data.main.feels_like+" °c";
+            min_temp[0].innerHTML = "Min-Temp - "+ data.main.temp_min+ " °c";
+            max_temp[0].innerHTML = "Max-Temp - "+ data.main.temp_max+ " °c";
 
             if(weathicon==="01d" || weathicon==="01n"){
                 setWicon(clear_icon);
@@ -57,15 +63,23 @@ const WaeatherApp = ()=> {
 
              
         }catch(err){
-            console.log(err);
+            //console.log(err);
             alert("Wrong Location Entered - Please enter correct location");
         }
         
-     }
+    }
+    
+    const handleKeyPress = (event) => {
+        if (event.key === 'Enter') {
+            search();
+            //console.log('Enter key pressed!');
+        }
+    }
+
   return (
     <div className='container'>
         <div className="top-bar">
-            <input type="text" className="cityInput" placeholder="Search" />
+            <input type="text" className="cityInput" placeholder="Search" onKeyDown={handleKeyPress} />
             <div className="search-icon" onClick={()=>{search()}}>
                 <img src={search_icon} alt="" />
             </div>
@@ -74,6 +88,7 @@ const WaeatherApp = ()=> {
             <img src={wicon} alt="" />
         </div>
         <div className="weather-temp">0°c</div>
+        <div className="weather-feels-like-temp"></div>
         <div className="weather-location">No location</div>
         <div className="data-container">
             <div className="element">
@@ -81,8 +96,16 @@ const WaeatherApp = ()=> {
                 <div className="data">
                     <div className="humidity-percent">0%</div>
                     <div className="text">Humidity</div>
+                    
                 </div>
             </div>
+            <div className="element">
+                <div className="data">
+                    <div className="maxtemp"></div>
+                    <div className="mintemp"></div>
+                </div>
+            </div>
+
             <div className="element">
                 <img src={wind_icon} alt="" className="icon"/>
                 <div className="data">
@@ -90,6 +113,8 @@ const WaeatherApp = ()=> {
                     <div className="text">Wind Speed</div>
                 </div>
             </div>
+
+            
         </div>
     </div>
   );
